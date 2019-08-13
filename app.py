@@ -1,0 +1,83 @@
+from flask import Flask,render_template, Response, request
+import sys
+# Tornado web server
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+import tornado.ioloop
+from tornado.ioloop import IOLoop
+from text2speech import T2S
+import os
+
+#Debug logger
+import logging 
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
+language = 'kr'
+t2s = T2S(language)
+sample_text = {
+    'kr' : '여기에 텍스트 입력',
+    'en' : 'Enter the text'
+}
+
+
+# Initialize Flask.
+app = Flask(__name__)
+
+@app.route('/tts', methods=['GET', 'POST'])
+def texttospeech():
+    if request.method == 'POST':
+        result = request.form
+        lang = result['input_language']
+        text = result['input_text']
+        if lang == t2s.language:
+            audio = t2s.tts(text)
+        else:
+            audio = t2s.update_model(lang).tts(text)
+        print(audio)
+        return render_template('simple.html', voice=audio, sample_text=text, opt_lang=t2s.language)
+
+            
+
+
+#Route to render GUI
+@app.route('/')
+def show_entries():
+    return render_template('simple.html', sample_text=sample_text.get(t2s.language), voice=None, opt_lang=t2s.language)
+
+#Route to stream music
+@app.route('/<voice>', methods=['GET'])
+def streammp3(voice):
+    print(f"wow: {voice}")
+    def generate():    
+        
+        count = 1
+        
+        with open(os.path.join('wavs',voice), "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+                logging.debug('Music data fragment : ' + str(count))
+                count += 1
+           
+                
+               
+                
+    return Response(generate(), mimetype="audio/mp3")
+
+#launch a Tornado server with HTTPServer.
+if __name__ == "__main__":
+    port = 5000
+    http_server = HTTPServer(WSGIContainer(app))
+    logging.debug("Started Server, Kindly visit http://localhost:" + str(port))
+    http_server.listen(port)
+    io_loop = tornado.ioloop.IOLoop.current()
+    io_loop.start()
+    

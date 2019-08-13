@@ -1,0 +1,7 @@
+{
+    "model" : {
+        "kr" : "models/kr_82k",
+        "en" : "models/en_90k",
+        "waveglow" : "models/waveglow_152000"
+    }
+}
