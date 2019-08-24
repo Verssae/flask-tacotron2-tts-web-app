@@ -21,7 +21,7 @@
 
         <div id="content" class="jumbotron">
             <h1 class="display-4">Text To Speech </h1>
-            <p class="lead">NVIDIA Tacotron2 및 waveglow 기반의 한국어/영어 TTS 모델입니다.</p>
+            <p class="lead">NVIDIA Tacotron2 and waveglow based Korean/English TTS model.</p>
             <hr class="my-4">
             <form id="input_form" name="input_form" method="POST" action="/tts">
                 <div class="form-group">
@@ -39,14 +39,14 @@
                 </div>
             </form>
             <div id="warning" class="alert alert-warning" role="alert" style="display: none">
-                텍스트를 입력하세요.
+                텍스트를 입력하세요. (Input the texts)
               </div>
 
             <hr class="my-4">
             {% if voice %}
             <div class="media">
                 <div class="media-body pull-right">
-                    <p class="lead"> 합성된 음성 </p>
+                    <p class="lead"> 합성된 음성 (Result) </p>
 
                     <audio controls preload="auto" autoplay>
                         <source src="http://localhost:5000/{{voice}}" type="audio/mp3">
