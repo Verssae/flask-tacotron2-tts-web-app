@@ -6,6 +6,10 @@ Because I didn't know flask well, I forked [CodeDem/flask-musing-streaming](http
 
 If you want to test **NVIDIA Tacotron2** models in ` jupyter notebook`, you better try  inference model [NVIDIA/Tacotron2](https://github.com/nvidia/tacotron2) . 
 
+![example](example.png)
+
+
+
 ## Installation
 
 1. Install [PyTorch 1.0](https://github.com/pytorch/pytorch#installation) (You Need NVIDIA CUDA GPUs!)
