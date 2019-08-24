@@ -40,14 +40,15 @@ def show_entries():
 #Route to stream music
 @app.route('/<voice>', methods=['GET'])
 def streammp3(voice):
-    if voice.endswith(".wav"):
-        def generate():    
-            with open(os.path.join('wavs',voice), "rb") as fwav:
+    
+    def generate():    
+        with open(os.path.join('wavs',voice), "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
                 data = fwav.read(1024)
-                while data:
-                    yield data
-                
-        return Response(generate(), mimetype="audio/mp3")
+            
+    return Response(generate(), mimetype="audio/mp3")
 
 #launch a Tornado server with HTTPServer.
 if __name__ == "__main__":
