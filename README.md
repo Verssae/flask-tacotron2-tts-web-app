@@ -16,6 +16,8 @@ If you want to test **NVIDIA Tacotron2** models in ` jupyter notebook`, you bett
 
 `pytorch 1.1.0`
 
+`tensorflow 1.13.1`
+
 ## Installation
 
 1. Install requirements [CUDA 10.0](https://developer.nvidia.com/cuda-10.0-download-archive), [PyTorch 1.1.0](https://pytorch.org/get-started/locally/) 
