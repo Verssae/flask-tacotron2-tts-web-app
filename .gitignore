@@ -1,4 +1,5 @@
 *.wav
+!example.wav
 *.png
 !example.png
 __pycache__

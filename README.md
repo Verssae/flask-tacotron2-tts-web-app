@@ -8,11 +8,17 @@ If you want to test **NVIDIA Tacotron2** models in ` jupyter notebook`, you bett
 
 ![example](example.png)
 
+## Requirements
 
+`python 3.6`
+
+`CUDA 10.0`
+
+`pytorch 1.1.0`
 
 ## Installation
 
-1. Install [PyTorch 1.0](https://github.com/pytorch/pytorch#installation) (You Need NVIDIA CUDA GPUs!)
+1. Install requirements [CUDA 10.0](https://developer.nvidia.com/cuda-10.0-download-archive), [PyTorch 1.1.0](https://pytorch.org/get-started/locally/) 
 
 2. `pip install -r requirement.txt`
 
@@ -29,6 +35,22 @@ If you want to test **NVIDIA Tacotron2** models in ` jupyter notebook`, you bett
       Tacotron2: English_90k_steps(ljspeech dataset), Korean_162k_steps(kss dataset)
 
       Waveglow: waveglow_152k_steps using Korean dataset
+
+
+
+**If you get this error**
+
+```
+ModuleNotFoundError: No module named 'tacotron2.layers'
+```
+
+**try this step**
+
+```
+export PYTHONPATH="$PYTHONPATH:/path/to/flask-tacotron2-tts-web-app"
+```
+
+
 
 ## Usage
 
