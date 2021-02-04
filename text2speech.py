@@ -25,14 +25,7 @@ class T2S:
             self.config = json.load(f)
 
         self.waveglow_path = self.config.get('model').get('waveglow')
-        state_dict = torch.load('models/waveglow', map_location=torch.device('cpu'))['state_dict']
-        tmp_state_dict = {}
-        for key in state_dict.keys():
-            tmp_state_dict[key.replace('module.', '')] = state_dict[key]
-        state_dict = tmp_state_dict
-        self.waveglow = WaveGlow(80, 12, 8, 4, 2, {"n_layers": 8, 'n_channels':256, 'kernel_size':3})
-        self.waveglow.load_state_dict(state_dict)
-        self.waveglow.remove_weightnorm(self.waveglow)
+        self.waveglow = torch.load('models/waveglow', map_location=torch.device('cpu'))['model']
         self.waveglow.eval()
 
         for m in self.waveglow.modules():
@@ -61,6 +54,7 @@ class T2S:
         sequence = np.array(text_to_sequence(text, [self.cleaner]))[None, :]
         sequence = torch.autograd.Variable(torch.from_numpy(sequence)).long()
         mel_outputs, mel, _, alignments = self.model.inference(sequence)
+        mel_outputs = mel_outputs.to('cpu')
         mel = mel.to('cpu') 
         with torch.no_grad():
             audio = self.waveglow.infer(mel, sigma=0.666)
@@ -82,6 +76,6 @@ class T2S:
         self.cleaner = 'english_cleaners'
         self.language = lang
         self.model = self.load_model()
-        self.model.load_state_dict(torch.load(self.checkpoint_path)['state_dict'])
+        self.model.load_state_dict(torch.load(self.checkpoint_path, map_location=torch.device('cpu'))['state_dict'])
         _ = self.model.eval()
         return self

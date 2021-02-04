@@ -11,3 +11,5 @@ COPY models/jeffotron_7000 /flask-tacotron2-tts-web-app/models/jeffotron_7000
 COPY models/waveglow /flask-tacotron2-tts-web-app/models/waveglow
 
 WORKDIR flask-tacotron2-tts-web-app
+
+ENTRYPOINT "python3" "app.py"
