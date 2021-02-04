@@ -11,7 +11,9 @@ from model import Tacotron2
 from text import text_to_sequence
 sys.path.append('waveglow/')
 from waveglow.mel2samp import MAX_WAV_VALUE
+from waveglow.glow import WaveGlow
 #from denoiser import Denoiser
+
 import json
 
 class T2S:
@@ -23,9 +25,14 @@ class T2S:
             self.config = json.load(f)
 
         self.waveglow_path = self.config.get('model').get('waveglow')
-        #self.waveglow = torch.load(self.waveglow_path)['model']
-        self.waveglow=torch.hub.load('nvidia/DeepLearningExamples:torchhub', 'nvidia_waveglow')
-        self.waveglow = self.waveglow.to('cpu')
+        state_dict = torch.load('models/waveglow', map_location=torch.device('cpu'))['state_dict']
+        tmp_state_dict = {}
+        for key in state_dict.keys():
+            tmp_state_dict[key.replace('module.', '')] = state_dict[key]
+        state_dict = tmp_state_dict
+        self.waveglow = WaveGlow(80, 12, 8, 4, 2, {"n_layers": 8, 'n_channels':256, 'kernel_size':3})
+        self.waveglow.load_state_dict(state_dict)
+        self.waveglow.remove_weightnorm(self.waveglow)
         self.waveglow.eval()
 
         for m in self.waveglow.modules():
@@ -39,7 +46,7 @@ class T2S:
 
     
     def load_model(self):
-        model = Tacotron2(self.hparams).cuda()
+        model = Tacotron2(self.hparams)
         if self.hparams.fp16_run:
             model.decoder.attention_layer.score_mask_value = finfo('float16').min
 
@@ -52,7 +59,7 @@ class T2S:
         if not filename:
             filename = str(time.time())
         sequence = np.array(text_to_sequence(text, [self.cleaner]))[None, :]
-        sequence = torch.autograd.Variable(torch.from_numpy(sequence)).cuda().long()
+        sequence = torch.autograd.Variable(torch.from_numpy(sequence)).long()
         mel_outputs, mel, _, alignments = self.model.inference(sequence)
         mel = mel.to('cpu') 
         with torch.no_grad():
