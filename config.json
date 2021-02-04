@@ -1,5 +1,5 @@
 {
     "model" : {
-        "en" : "/tacotron2-jeff/out/checkpoint_6600"
+        "en" : "models/jeffotron_7000"
     }
 }
