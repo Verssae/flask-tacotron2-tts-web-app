@@ -8,10 +8,9 @@ from tornado.ioloop import IOLoop
 from text2speech import T2S
 import os
 
-language = 'kr' 
+language = 'en' 
 t2s = T2S(language)
 sample_text = {
-    'kr' : '여기에 텍스트 입력',
     'en' : 'Enter the text'
 }
 
@@ -22,7 +21,7 @@ app = Flask(__name__)
 def texttospeech():
     if request.method == 'POST':
         result = request.form
-        lang = result['input_language']
+        lang = 'en'
         text = result['input_text']
         if lang == t2s.language:
             audio = t2s.tts(text)
@@ -39,8 +38,7 @@ def show_entries():
 
 #Route to stream music
 @app.route('/<voice>', methods=['GET'])
-def streammp3(voice):
-    
+def streamwav(voice):
     def generate():    
         with open(os.path.join('wavs',voice), "rb") as fwav:
             data = fwav.read(1024)
@@ -48,11 +46,11 @@ def streammp3(voice):
                 yield data
                 data = fwav.read(1024)
             
-    return Response(generate(), mimetype="audio/mp3")
+    return Response(generate(), mimetype="audio/")
 
 #launch a Tornado server with HTTPServer.
 if __name__ == "__main__":
-    port = 5000
+    port = 31337 
     http_server = HTTPServer(WSGIContainer(app))
     http_server.listen(port)
     io_loop = tornado.ioloop.IOLoop.current()

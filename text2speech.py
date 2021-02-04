@@ -11,7 +11,7 @@ from model import Tacotron2
 from text import text_to_sequence
 sys.path.append('waveglow/')
 from waveglow.mel2samp import MAX_WAV_VALUE
-from denoiser import Denoiser
+#from denoiser import Denoiser
 import json
 
 class T2S:
@@ -23,8 +23,10 @@ class T2S:
             self.config = json.load(f)
 
         self.waveglow_path = self.config.get('model').get('waveglow')
-        self.waveglow = torch.load(self.waveglow_path)['model']
-        self.waveglow.cuda().eval().half()
+        #self.waveglow = torch.load(self.waveglow_path)['model']
+        self.waveglow=torch.hub.load('nvidia/DeepLearningExamples:torchhub', 'nvidia_waveglow')
+        self.waveglow = self.waveglow.to('cpu')
+        self.waveglow.eval()
 
         for m in self.waveglow.modules():
             if 'Conv' in str(type(m)):
@@ -32,7 +34,7 @@ class T2S:
                 
         for k in self.waveglow.convinv:
             k.float()
-        self.denoiser = Denoiser(self.waveglow)
+        #self.denoiser = Denoiser(self.waveglow)
         self.update_model(lang)
 
     
@@ -52,7 +54,7 @@ class T2S:
         sequence = np.array(text_to_sequence(text, [self.cleaner]))[None, :]
         sequence = torch.autograd.Variable(torch.from_numpy(sequence)).cuda().long()
         mel_outputs, mel, _, alignments = self.model.inference(sequence)
-        
+        mel = mel.to('cpu') 
         with torch.no_grad():
             audio = self.waveglow.infer(mel, sigma=0.666)
             audio = audio * MAX_WAV_VALUE
@@ -69,20 +71,10 @@ class T2S:
         
 
     def update_model(self, lang):
-        if lang == 'en':
-            self.checkpoint_path = self.config.get('model').get('en')
-            self.cleaner = 'english_cleaners'
-            self.language = lang
-        else:
-            self.checkpoint_path = self.config.get('model').get('kr')
-            self.cleaner =  'transliteration_cleaners'
-            self.language = lang
-
+        self.checkpoint_path = self.config.get('model').get('en')
+        self.cleaner = 'english_cleaners'
+        self.language = lang
         self.model = self.load_model()
         self.model.load_state_dict(torch.load(self.checkpoint_path)['state_dict'])
-        _ = self.model.cuda().eval().half()
+        _ = self.model.eval()
         return self
-
-        
-        
-

@@ -1,7 +1,5 @@
 {
     "model" : {
-        "kr" : "models/kr_82k",
-        "en" : "models/en_90k",
-        "waveglow" : "models/waveglow_152k"
+        "en" : "/tacotron2-jeff/out/checkpoint_6600"
     }
 }

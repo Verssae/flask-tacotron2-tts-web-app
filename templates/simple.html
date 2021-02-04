@@ -20,37 +20,30 @@
 
 
         <div id="content" class="jumbotron">
-            <h1 class="display-4">Text To Speech </h1>
-            <p class="lead">NVIDIA Tacotron2 and waveglow based Korean/English TTS model.</p>
+            <h1 class="display-4">Jeffotron</h1>
+            <p class="lead">Tacotron2/waveglow Text to Speech model trained on Jeff Gerstmann's voice</p>
             <hr class="my-4">
             <form id="input_form" name="input_form" method="POST" action="/tts">
-                <div class="form-group">
-                    <label for="select">언어 (language) </label>
-                    <select name="input_language" class="form-control">
-                        <option value="kr" {{ 'selected' if opt_lang == 'kr'else '' }}>한글</option>
-                        <option value="en" {{ 'selected' if opt_lang == 'en'else '' }}>English</option>
-                    </select></div>
-
                 <div class="form-group">
                     <textarea class="form-control" id="text_area" name="input_text" placeholder="{{sample_text}}"
                         cols="40" rows="8"></textarea></div>
                 <div id="btns" class="form-group">
-                    <input id="btn" type="submit" class="btn btn-primary mb-2" value="음성합성(TTS)" />
+                    <input id="btn" type="submit" class="btn btn-primary mb-2" value="Submit" />
                 </div>
             </form>
             <div id="warning" class="alert alert-warning" role="alert" style="display: none">
-                텍스트를 입력하세요. (Input the texts)
+		Enter some text.
               </div>
 
             <hr class="my-4">
             {% if voice %}
             <div class="media">
                 <div class="media-body pull-right">
-                    <p class="lead"> 합성된 음성 (Result) </p>
-
-                    <audio controls preload="auto" autoplay>
-                        <source src="http://localhost:5000/{{voice}}" type="audio/mp3">
-                    </audio>
+                    <p class="lead">Result</p>
+		    <audio controls>
+			    <source src="/{{voice}}" type="audio/wav">
+			     Your browser does not support the audio element.
+		    </audio> 
                 </div>
                 {% endif %}
 
