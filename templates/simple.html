@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>The Text to Speech App</title>
+    <title>Jeffotron</title>
     <link rel="shortcut icon" href="/wavs/favicon.ico">
 
 </head>
@@ -22,8 +22,18 @@
         <div id="content" class="jumbotron">
             <h1 class="display-4">Jeffotron</h1>
             <p class="lead">Tacotron2/waveglow Text to Speech model trained on Jeff Gerstmann's voice</p>
+            <p class="lead">"It's a perfect mix of identifiably me and a total nightmare." -Real Jeff</p>
             <hr class="my-4">
             <form id="input_form" name="input_form" method="POST" action="/tts">
+	    <div class="form-group">
+		<label for="select">Model</label>
+		<select name="input_model" class="form-control">
+		    <option value="attempt11_8000">JGSpeech-1.5 8000 iterations</option>
+		    <option value="attempt5_3600">JGSpeech-0.4 3600 iterations</option>
+		    <option value="attempt5_18000">JGSpeech-0.4 18000 iterations</option>
+		</select>
+	    </div>
+
                 <div class="form-group">
                     <textarea class="form-control" id="text_area" name="input_text" placeholder="{{sample_text}}"
                         cols="40" rows="8"></textarea></div>
@@ -45,10 +55,18 @@
 			     Your browser does not support the audio element.
 		    </audio> 
                 </div>
+	    </div>	
                 {% endif %}
-
-            </div>
+	    <div id="ad">
+	        <br>
+	     	    Powered by <a href="https://leaf.cloud">
+		        <img src="https://www.leaf.cloud/images/logo/leafcloud-logo.png" width="100px"/>
+		     </a>
+	        <br/>
+	    </div>
         </div>
+
+
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript">
             $(document).ready(() => {

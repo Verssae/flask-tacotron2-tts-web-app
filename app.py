@@ -8,11 +8,9 @@ from tornado.ioloop import IOLoop
 from text2speech import T2S
 import os
 
-language = 'en' 
-t2s = T2S(language)
-sample_text = {
-    'en' : 'Enter the text'
-}
+model = 'attempt11_8000' 
+t2s = T2S(model)
+sample_text = 'Enter a sentence.'
 
 # Initialize Flask.
 app = Flask(__name__)
@@ -21,20 +19,19 @@ app = Flask(__name__)
 def texttospeech():
     if request.method == 'POST':
         result = request.form
-        lang = 'en'
+        model = result['input_model']
         text = result['input_text']
-        if lang == t2s.language:
+        if model == t2s.model_choice:
             audio = t2s.tts(text)
         else:
-            audio = t2s.update_model(lang).tts(text)
-        print(audio)
-        return render_template('simple.html', voice=audio, sample_text=text, opt_lang=t2s.language)
+            audio = t2s.update_model(model).tts(text)
+        return render_template('simple.html', voice=audio, sample_text=text, opt_lang=t2s.model_choice)
 
             
 #Route to render GUI
 @app.route('/')
 def show_entries():
-    return render_template('simple.html', sample_text=sample_text.get(t2s.language), voice=None, opt_lang=t2s.language)
+    return render_template('simple.html', sample_text=sample_text, voice=None, opt_lang=t2s.model_choice)
 
 #Route to stream music
 @app.route('/<voice>', methods=['GET'])

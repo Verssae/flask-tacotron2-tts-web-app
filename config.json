@@ -1,5 +1,7 @@
 {
     "model" : {
-        "en" : "models/jeffotron_7000"
+	"attempt11_8000": "models/checkpoint_8000",
+        "attempt5_3600" : "models/jeffotron_3600",
+        "attempt5_18000" : "models/jeffotron_18000"
     }
 }
