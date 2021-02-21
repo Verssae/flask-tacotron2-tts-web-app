@@ -21,17 +21,18 @@ def texttospeech():
         result = request.form
         model = result['input_model']
         text = result['input_text']
-        if model == t2s.model_choice:
+        max_duration_s = float(result['max_duration_s'])
+        if model == t2s.model_choice and max_duration_s == t2s.max_duration_s:
             audio = t2s.tts(text)
         else:
-            audio = t2s.update_model(model).tts(text)
-        return render_template('simple.html', voice=audio, sample_text=text, opt_lang=t2s.model_choice)
+            audio = t2s.update_model(model, max_duration_s).tts(text)
+        return render_template('simple.html', voice=audio, sample_text=text, model_choice=t2s.model_choice, max_duration_s=max_duration_s)
 
             
 #Route to render GUI
 @app.route('/')
 def show_entries():
-    return render_template('simple.html', sample_text=sample_text, voice=None, opt_lang=t2s.model_choice)
+    return render_template('simple.html', sample_text=sample_text, voice=None, model_choice=t2s.model_choice, max_duration_s=t2s.max_duration_s)
 
 #Route to stream music
 @app.route('/<voice>', methods=['GET'])

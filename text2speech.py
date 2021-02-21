@@ -24,8 +24,9 @@ class T2S:
         self.hparams.sampling_rate = 22050
         with open('config.json', 'r') as f:
             self.config = json.load(f)
+        self.max_duration_s = self.config.get('max_duration_s')
+        self.hparams.max_decoder_steps = int(86.0 * self.max_duration_s)
 
-        self.waveglow_path = self.config.get('model').get('waveglow')
         self.waveglow = torch.load('models/waveglow', map_location=torch.device('cpu'))['model']
         self.waveglow.eval()
 
@@ -36,7 +37,7 @@ class T2S:
         for k in self.waveglow.convinv:
             k.float()
         #self.denoiser = Denoiser(self.waveglow)
-        self.update_model(model_choice)
+        self.update_model(model_choice, self.max_duration_s)
 
     
     def load_model(self):
@@ -76,7 +77,12 @@ class T2S:
         
         
 
-    def update_model(self, model_choice):
+    def update_model(self, model_choice, max_duration_s):
+        # in case someone tries to bypass form validation and overload servers
+        if max_duration_s > 12.0:
+            self.hparams.max_decoder_steps=1024
+        else:
+            self.hparams.max_decoder_steps = int(86.0 * max_duration_s)
         self.cleaner = 'english_cleaners'
         self.model_choice = model_choice
         self.checkpoint_path = self.config.get('model').get(self.model_choice) 

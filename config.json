@@ -1,4 +1,5 @@
 {
+    "max_duration_s": 3.0,
     "model" : {
 	"attempt11_8000": "models/checkpoint_8000",
         "attempt5_3600" : "models/jeffotron_3600",
