@@ -3,7 +3,6 @@
 *.png
 !example.png
 __pycache__
-waveglow/
 modules/
 models/
 models.zip

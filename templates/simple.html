@@ -7,8 +7,46 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>The Text to Speech App</title>
+    <title>Jeffotron</title>
     <link rel="shortcut icon" href="/wavs/favicon.ico">
+
+.  <style>
+		.collapsible {
+		  background-color: #777;
+		  color: white;
+		  cursor: pointer;
+		  padding: 10px;
+		  width: 100%;
+		  border: none;
+		  text-align: left;
+		  outline: none;
+		  font-size: 15px;
+		}
+
+		.active, .collapsible:hover {
+		  background-color: #555;
+		}
+
+		.collapsible:after {
+		  content: '\002B';
+		  color: white;
+		  font-weight: bold;
+		  float: right;
+		  margin-left: 5px;
+		}
+
+		.active:after {
+		  content: "\2212";
+		}
+
+		.content {
+		  padding: 0 18px;
+		  max-height: 0;
+		  overflow: hidden;
+		  transition: max-height 0.2s ease-out;
+		  background-color: #f1f1f1;
+		}
+    </style>
 
 </head>
 
@@ -20,42 +58,59 @@
 
 
         <div id="content" class="jumbotron">
-            <h1 class="display-4">Text To Speech </h1>
-            <p class="lead">NVIDIA Tacotron2 and waveglow based Korean/English TTS model.</p>
+            <h1 class="display-4">Jeffotron</h1>
+            <p class="lead">Tacotron2/waveglow Text to Speech model trained on Jeff Gerstmann's voice</p>
+            <p class="lead">"It's a perfect mix of identifiably me and a total nightmare." -Real Jeff</p>
             <hr class="my-4">
             <form id="input_form" name="input_form" method="POST" action="/tts">
                 <div class="form-group">
-                    <label for="select">언어 (language) </label>
-                    <select name="input_language" class="form-control">
-                        <option value="kr" {{ 'selected' if opt_lang == 'kr'else '' }}>한글</option>
-                        <option value="en" {{ 'selected' if opt_lang == 'en'else '' }}>English</option>
-                    </select></div>
-
+                    <label for="select">Model</label>
+                    <select name="input_model" class="form-control">
+			<option value="attempt11_8000" {{ 'selected' if model_choice == 'attempt11_8000' }} >JGSpeech-1.5 8000 iterations</option>
+                        <option value="attempt5_3600" {{ 'selected' if model_choice == 'attempt5_3600' }} >JGSpeech-0.4 3600 iterations</option>
+                        <option value="attempt5_18000" {{ 'selected' if model_choice == 'attempt5_18000' }}>JGSpeech-0.4 18000 iterations</option>
+                    </select>
+                </div>
+                <button class="collapsible" type="button">Advanced Options</button>
+                    <div class="form-group content" style="box-shadow: #777777 0px 0px 0px 3px inset;">
+                        <div class=form-group" style="margin-top: 1em;">
+                            <label for="select">Max Duration (seconds)</label>
+                            <input style="width: -webkit-fill-available; class="form-control" value="{{max_duration_s}}" type="number" min="0.1" max="12.0" step="0.1" name="max_duration_s">
+			</div>
+		   </div>
                 <div class="form-group">
                     <textarea class="form-control" id="text_area" name="input_text" placeholder="{{sample_text}}"
                         cols="40" rows="8"></textarea></div>
                 <div id="btns" class="form-group">
-                    <input id="btn" type="submit" class="btn btn-primary mb-2" value="음성합성(TTS)" />
+                    <input id="btn" type="submit" class="btn btn-primary mb-2" value="Submit" />
                 </div>
             </form>
             <div id="warning" class="alert alert-warning" role="alert" style="display: none">
-                텍스트를 입력하세요. (Input the texts)
+        Enter some text.
               </div>
 
             <hr class="my-4">
             {% if voice %}
             <div class="media">
                 <div class="media-body pull-right">
-                    <p class="lead"> 합성된 음성 (Result) </p>
-
-                    <audio controls preload="auto" autoplay>
-                        <source src="http://localhost:5000/{{voice}}" type="audio/mp3">
-                    </audio>
+                    <p class="lead">Result</p>
+            <audio controls>
+                <source src="/{{voice}}" type="audio/wav">
+                 Your browser does not support the audio element.
+            </audio> 
                 </div>
+        </div>  
                 {% endif %}
-
-            </div>
+        <div id="ad">
+            <br>
+                Powered by <a href="https://leaf.cloud">
+                <img src="https://www.leaf.cloud/images/logo/leafcloud-logo.png" width="100px"/>
+             </a>
+            <br/>
         </div>
+        </div>
+
+
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript">
             $(document).ready(() => {
@@ -92,6 +147,22 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
 
+	 <script>
+	    // https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_symbol
+	    let coll = document.getElementsByClassName("collapsible");
+	    
+	    for (let i = 0; i < coll.length; i++) {
+	      coll[i].addEventListener("click", function() {
+		this.classList.toggle("active");
+		var content = this.nextElementSibling;
+		if (content.style.maxHeight){
+		  content.style.maxHeight = null;
+		} else {
+		  content.style.maxHeight = content.scrollHeight + "px";
+		} 
+	      });
+	    }
+        </script>
 
 </body>
 
